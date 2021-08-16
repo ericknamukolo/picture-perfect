@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:picture_perfect/constants.dart';
 import 'package:picture_perfect/providers/wallpaper.dart';
+import 'package:picture_perfect/screens/categories_screen.dart';
 import 'package:picture_perfect/widgets/categories_card.dart';
 import 'package:picture_perfect/widgets/picture.dart';
 import 'package:picture_perfect/widgets/search_field.dart';
@@ -48,10 +49,31 @@ class _PicturesScreenState extends State<PicturesScreen> {
         children: [
           SearchField(),
           Container(
-            margin: EdgeInsets.only(left: 15, bottom: 10),
-            child: Text(
-              'Trending Categories',
-              style: kNormalBoldTextStyle.copyWith(fontSize: 16),
+            margin: EdgeInsets.only(left: 15, bottom: 10, right: 15),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Trending Categories',
+                  style: kNormalBoldTextStyle.copyWith(fontSize: 16),
+                ),
+                InkWell(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => CategoriesScreen(),
+                      ),
+                    );
+                  },
+                  child: Text(
+                    'See All',
+                    style: kNormalBoldTextStyle.copyWith(
+                      fontSize: 16,
+                      color: Color(0xff01c5c4),
+                    ),
+                  ),
+                ),
+              ],
             ),
             alignment: Alignment.centerLeft,
           ),
@@ -64,7 +86,7 @@ class _PicturesScreenState extends State<PicturesScreen> {
                 id: fetchedPictures.categories[index].id,
               ),
               scrollDirection: Axis.horizontal,
-              itemCount: fetchedPictures.categories.length,
+              itemCount: 8,
             ),
           ),
           Container(
@@ -83,6 +105,7 @@ class _PicturesScreenState extends State<PicturesScreen> {
               id: fetchedPictures.wallpapers[index].id,
               url: fetchedPictures.wallpapers[index].imgUrl,
               photographer: fetchedPictures.wallpapers[index].photographer,
+              colorCode: fetchedPictures.wallpapers[index].colorCode,
             ),
             staggeredTileBuilder: (int index) =>
                 StaggeredTile.count(1, index.isEven ? 1.2 : 1.6),

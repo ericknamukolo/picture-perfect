@@ -5,25 +5,18 @@ import 'package:picture_perfect/providers/wallpaper.dart';
 import 'package:picture_perfect/widgets/picture.dart';
 import 'package:provider/provider.dart';
 
-class CategoryScreen extends StatefulWidget {
-  final String categoryName;
-  final int id;
-  final String imgUrl;
-  CategoryScreen({
-    required this.categoryName,
-    required this.id,
-    required this.imgUrl,
-  });
-
+class SearchScreen extends StatefulWidget {
+  final String searchedName;
+  SearchScreen({required this.searchedName});
   @override
-  _CategoryScreenState createState() => _CategoryScreenState();
+  _SearchScreenState createState() => _SearchScreenState();
 }
 
-class _CategoryScreenState extends State<CategoryScreen> {
+class _SearchScreenState extends State<SearchScreen> {
+  final ScrollController _scrollController = ScrollController();
   var _isLoading = false;
   var _isLoadingMore = false;
   int _loadMore = 20;
-  final ScrollController _scrollController = ScrollController();
   @override
   void initState() {
     super.initState();
@@ -32,7 +25,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
         _isLoading = true;
       });
       await Provider.of<Wallpaper>(context, listen: false)
-          .getCategoryWallpapers(widget.categoryName, _loadMore);
+          .getCategoryWallpapers(widget.searchedName, _loadMore);
       setState(() {
         _isLoading = false;
       });
@@ -46,7 +39,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
         });
         _loadMore += 20;
         await Provider.of<Wallpaper>(context, listen: false)
-            .getCategoryWallpapers(widget.categoryName, _loadMore);
+            .getCategoryWallpapers(widget.searchedName, _loadMore);
         setState(() {
           _isLoadingMore = false;
         });
@@ -93,12 +86,13 @@ class _CategoryScreenState extends State<CategoryScreen> {
         ),
         actions: [
           IconButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                Provider.of<Wallpaper>(context, listen: false)
-                    .getTrendingWallpers(1);
-              },
-              icon: Icon(Icons.close)),
+            onPressed: () {
+              Navigator.of(context).pop();
+              Provider.of<Wallpaper>(context, listen: false)
+                  .getTrendingWallpers(1);
+            },
+            icon: Icon(Icons.close),
+          ),
         ],
         leading: Opacity(
           opacity: 0,
@@ -116,7 +110,11 @@ class _CategoryScreenState extends State<CategoryScreen> {
               decoration: BoxDecoration(
                 color: Colors.white,
                 image: DecorationImage(
-                  image: NetworkImage(widget.imgUrl),
+                  image: NetworkImage(
+                    _isLoading
+                        ? 'https://icons8.com/preloaders/preloaders/1495/Spinner-3.gif'
+                        : fetchedPictures.wallpapers[2].imgUrl,
+                  ),
                   fit: BoxFit.cover,
                   colorFilter: ColorFilter.mode(
                     Colors.black.withOpacity(0.4),
@@ -125,8 +123,11 @@ class _CategoryScreenState extends State<CategoryScreen> {
                 ),
               ),
               child: Center(
-                child: Text(widget.categoryName,
-                    style: kNormalTextStyle.copyWith(fontSize: 50)),
+                child: Text(
+                  widget.searchedName.substring(0, 1).toUpperCase() +
+                      widget.searchedName.substring(1).toLowerCase(),
+                  style: kNormalTextStyle.copyWith(fontSize: 50),
+                ),
               ),
             ),
             SizedBox(

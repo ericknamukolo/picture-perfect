@@ -6,10 +6,12 @@ class Picture extends StatelessWidget {
   final int id;
   final String url;
   final String photographer;
+  final String colorCode;
   Picture({
     required this.id,
     required this.url,
     required this.photographer,
+    required this.colorCode,
   });
   @override
   Widget build(BuildContext context) {
@@ -17,7 +19,11 @@ class Picture extends StatelessWidget {
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => Preview(id: id),
+            builder: (context) => Preview(
+              id: id,
+              colorCode: colorCode,
+              photographer: photographer,
+            ),
           ),
         );
       },
